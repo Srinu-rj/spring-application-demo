@@ -10,7 +10,7 @@ env:
   DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
 jobs:
-  git-ckeckout:
+  git-checkOut:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -21,7 +21,7 @@ jobs:
 
   setup-jdk:
     runs-on: ubuntu-latest
-    needs: maven-build
+    needs: git-checkOut
     steps:
       - uses: actions/checkout@v4
       - name: Set up JDK 21
