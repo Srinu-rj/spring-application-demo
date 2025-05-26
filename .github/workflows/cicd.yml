@@ -133,10 +133,13 @@ jobs:
           echo "deb [signed-by=/usr/share/keyrings/trivy.gpg] https://aquasecurity.github.io/trivy-repo/deb generic main" | sudo tee -a /etc/apt/sources.list.d/trivy.list
           sudo apt-get update
           sudo apt-get install -y trivy
+
       - name: Trivy FS Scan (source code)
         run: trivy fs --exit-code 0 --severity CRITICAL,HIGH .
+
       - name: Trivy Image Scan
         run: trivy image --exit-code 0 --severity CRITICAL,HIGH srinu641/spring-application-github:v1.0
+
       - name: Run Trivy vulnerability scanner on code
         uses: aquasecurity/trivy-action@master
         with:
@@ -144,14 +147,14 @@ jobs:
           scan-ref: '.'
           severity: 'CRITICAL,HIGH'
           ignore-unfixed: true
-          format: 'html'
-          output: 'trivy-report.html'
+          format: 'table'
+          output: 'trivy-report.'table'
           exit-code: '0'
       - name: Upload Trivy Report
         uses: actions/upload-artifact@v4
         with:
           name: trivy-report
-          path: trivy-report.html
+          path: trivy-report.table
 
   k8s-deploy:
     runs-on: ubuntu-latest
