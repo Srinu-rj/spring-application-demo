@@ -148,13 +148,15 @@ jobs:
           severity: 'CRITICAL,HIGH'
           ignore-unfixed: true
           format: 'table'
+          output: 'trivy-report.table'
           exit-code: '0'
 
       - name: Upload Trivy Report
         uses: actions/upload-artifact@v4
         with:
-           name: trivy-report
-           path: trivy-report.table
+          name: trivy-report
+          path: trivy-report.table
+
 
   k8s-deploy:
     runs-on: ubuntu-latest
