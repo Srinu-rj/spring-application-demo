@@ -179,6 +179,12 @@ jobs:
           chmod +x argocd
           sudo mv argocd /usr/local/bin/argocd
 
+      - name: Set up kubectl
+        run: |
+          echo "Setting up kubectl"
+          sudo snap install kubectl --classic
+          kubectl cluster-info
+
       # Update Kubeconfig -> not started
       #      - name: Update kubeconfig
       #        run: aws eks --region ${{ secrets.AWS_REGION }} update-kubeconfig --name actions-eks-cluster # cluster name
