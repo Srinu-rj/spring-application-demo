@@ -80,36 +80,11 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-        #todo new code
-      - name: Extract metadata (tags, labels) for Docker
-        id: meta
-        uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
-        with:
-          images: srinu641/spring-github
-
-      - name: Build and push Docker image
-        id: push
-        uses: docker/build-push-action@3b5e8027fcad23fda98b2e3ac259d8d67585f671
-        with:
-          context: .
-          file: ./Dockerfile
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-
-      - uses: actions/checkout@v4
-      - name: Generate artifact attestation
-        uses: actions/attest-build-provenance@v2
-        with:
-          subject-name: index.docker.io/srinu641/spring-github
-          subject-digest: ${{ steps.push.outputs.digest }}
-          push-to-registry: true
-
-      #      - name: Build and Push Docker Image
-      #        run: |
-      #          docker build -t spring-application-github .
-      #          docker tag spring-application-github srinu641/spring-application-github:v1.0
-      #          docker push srinu641/spring-application-github:v1.0
+      - name: Build and Push Docker Image
+        run: |
+            docker build -t spring-application-github .
+            docker tag spring-application-github srinu641/spring-application-github:v1.0
+            docker push srinu641/spring-application-github:v1.0
 
       # Set up AWS Credentials -> not started
       #      - name: Configure AWS Credentials
@@ -253,26 +228,3 @@ jobs:
 #    format: 'table'
 #    exit-code: '1'
 
-
-#  main:
-#    runs-on: ubuntu-latest
-#    steps:
-#      - name: get follower change
-#        id: followerChange
-#        uses: Sorosliu1029/follower-change@v2
-#        with:
-#          myToken: ${{ secrets.MY_TOKEN }}
-#          notifyUnFollowEvent: true
-#      - name: email me
-#        uses: dawidd6/action-send-mail@v3
-#        if: steps.followerChange.outputs.shouldNotify == 'true'
-#        with:
-#          server_address: smtp.qq.com
-#          server_port: 465
-#          username: ${{ secrets.MAIL_USERNAME }}
-#          password: ${{ secrets.MAIL_PASSWORD }}
-#          subject: GitHub Follower Change
-#          from: Follower Change Notifier
-#          to: ${{ secrets.TO_EMAIL_ADDRESS }}
-#          # use html file from previous step as email body
-#          html_body: file://${{ steps.followerChange.outputs.htmlFilePath }}
