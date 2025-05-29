@@ -15,7 +15,11 @@ import java.util.List;
 @RequestMapping("${api.v1.prefix}/category")
 public class CategoryController {
 
-    private final CategoryService categoryService;
+    private CategoryService categoryService;
+
+    public CategoryController(CategoryService categoryService) {
+        this.categoryService = categoryService;
+    }
 
     @PostMapping("/addCategory")
     public ResponseEntity<Category> addCategory(@RequestBody @Valid Category category) {

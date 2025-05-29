@@ -2,29 +2,24 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: spring-deployment
-  namespace: application-namespace
+  namespace: {{ .Values.app.namespace }} # todo get it from Helm values.yml
   labels:
-    app: fargate-app
+    {{- include "spring-label-dev" . | nindent 4 }}
 spec:
-  replicas: 7
+  replicas: {{ .Values.app.replicas }}
   selector:
     matchLabels:
-      app: fargate-app
+      app: back-end-label
   template:
     metadata:
       labels:
-        app: fargate-app
+        {{- include "spring-label-dev" . | nindent 8 }}
     spec:
       containers:
         - name: spring-application-container
-          image: srinu641/ci-cd-demo:v1.0
+          image: {{ .Values.app.container.image }}
           resources:
-            requests:
-              memory: "64Mi"
-              cpu: "250m"
-            limits:
-              memory: "128Mi"
-              cpu: "500m"
+            {{-}}
           ports:
             - containerPort: 9988
 ---

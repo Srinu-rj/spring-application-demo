@@ -1,14 +1,17 @@
 package com.foodapp.springfoodapp.controller;
 
 
+import com.foodapp.springfoodapp.dto.BillDto;
 import com.foodapp.springfoodapp.entiry.Bill;
 import com.foodapp.springfoodapp.exception.ResourceNotFoundException;
 import com.foodapp.springfoodapp.request.ApiResponse;
 import com.foodapp.springfoodapp.service.BillService;
 import io.swagger.annotations.Api;
 import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -25,10 +28,11 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 @RequiredArgsConstructor
 public class BillController {
 
-    private final BillService billService;
+    @Autowired
+    private BillService billService;
 
     @PostMapping("/add")
-    public ResponseEntity<?> addBill(@RequestBody @Valid Bill bill) {
+    public ResponseEntity<Bill> addBill(@RequestBody @Valid Bill bill) {
         Bill saveBill = billService.addBill(bill);
         return new ResponseEntity<>(saveBill, HttpStatus.CREATED);
     }
@@ -58,14 +62,9 @@ public class BillController {
     }
 
     @DeleteMapping("/delete/{billId}")
-    public ResponseEntity<ApiResponse> deleteBill(@PathVariable int billId) {
-
-        try {
-            Bill deleteBill = billService.deleteBill(billId);
-            return ResponseEntity.ok(new ApiResponse("Deleted Bill Success", deleteBill));
-        } catch (ResourceNotFoundException e) {
-            return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(),null));
-        }
+    public ResponseEntity<Bill> deleteBill(@PathVariable int billId) {
+        Bill deleteBill = billService.deleteBill(billId);
+        return new ResponseEntity<>(deleteBill, HttpStatus.ACCEPTED);
     }
 
 }
