@@ -45,10 +45,12 @@ public class AddressController {
         return new ResponseEntity<>(saveAddressDemo, HttpStatus.CREATED);
     }
 
+    @GetMapping("/get/all")
     public ResponseEntity<List<Address>> getAllAddress() {
         List<Address> address = addressServices.getAll();
-        return new ResponseEntity<>(address, HttpStatus.CREATED);
+        return new ResponseEntity<>(address, HttpStatus.OK);
     }
+
 
     //TODO THE API SEARCH CITY
     @GetMapping("/get/city/query/{keyWord}")

@@ -1,0 +1,338 @@
+### ADDRESS-SAVE-ALL
+POST http://localhost:2255/api/v1/address/add/list/address
+Content-Type: application/json
+
+[
+  {
+    "addressId": 0,
+    "area": "string-http",
+    "city": "string-http",
+    "state": "string-http",
+    "country": "string-http",
+    "pinCode": "string-http"
+  }
+]
+
+### ADDRESS-SAVE
+POST http://localhost:2255/api/v1/address/save
+Content-Type: application/json
+
+{
+    "addressId": 0,
+    "area": "string",
+    "city": "string",
+    "state": "string",
+    "country": "string",
+    "pinCode": "string"
+}
+
+### ADDRESS-UPDATE
+PUT http://localhost:2255/api/v1/address/update/2
+Content-Type: application/json
+
+{
+  "addressId": 0,
+  "area": "string",
+  "city": "string",
+  "state": "string",
+  "country": "string",
+  "pinCode": "string"
+}
+
+### ADDRESS-GET-BY-ID
+GET http://localhost:2255/api/v1/address/2
+Content-Type: application/json
+
+###ADDRESS-GET-CITY
+GET http://localhost:2255/api/v1/address/get/city/query/staring
+Content-Type: application/json
+
+###ADDRESS-GET-ALL
+GET http://localhost:2255/api/v1/address/get/all
+Content-Type: application/json
+
+###ADDRESS-FIND-ALL-BY-QUEARY
+GET http://localhost:2255/api/v1/address/find/all/address/quary
+Content-Type: application/json
+
+###ADDRESS-DELETE
+DELETE http://localhost:2255/api/v1/address/delete/8
+Content-Type: application/json
+
+BILL CONTROLLER :
+
+### BILL-SAVE
+POST http://localhost:2255/api/v1/bill/add
+Content-Type: application/json
+
+{
+  "billId": 0,
+  "billDate": "2025-05-30T09:22:19.458Z",
+  "totalCost": 0,
+  "totalItem": 0,
+  "order": {
+    "orderId": 0,
+    "orderDate": "2025-05-30T09:22:19.458Z",
+    "orderStatus": "string"
+  }
+}
+
+### BILL-GET-ALL
+POST http://localhost:2255/api/v1/bill/addList
+Content-Type: application/json
+
+[
+  {
+    "billId": 0,
+    "billDate": "2025-05-30T09:22:47.806Z",
+    "totalCost": 0,
+    "totalItem": 0,
+    "order": {
+      "orderId": 0,
+      "orderDate": "2025-05-30T09:22:47.806Z",
+      "orderStatus": "string"
+    }
+  }
+]
+
+### BILL-UPDATE
+PUT http://localhost:2255/api/v1/bill/2
+Content-Type: application/json
+
+{
+  "billId": 0,
+  "billDate": "2025-05-30T09:25:37.637Z",
+  "totalCost": 0,
+  "totalItem": 0,
+  "order": {
+    "orderId": 0,
+    "orderDate": "2025-05-30T09:25:37.637Z",
+    "orderStatus": "string"
+  }
+}
+
+### BILL-GET
+GET http://localhost:2255/api/v1/bill/get
+Content-Type: application/json
+
+### BILL-GET-ID
+GET http://localhost:2255/api/v1/bill/bill/3
+Content-Type: application/json
+
+###BILL-DELETE
+GET http://localhost:2255/api/v1/bill/delete/3
+Content-Type: application/json
+
+CATEGORY-CONTROLLER :
+
+### CATEGORY-ADD-ALL
+POST http://localhost:2255/api/v1/category/addMore
+Content-Type: application/json
+
+[
+  {
+    "categoryId": 0,
+    "categoryName": "string"
+  }
+]
+
+### CATEGORY SAVE
+POST http://localhost:2255/api/v1/category/addCategory
+Content-Type: application/json
+
+{
+  "categoryId": 0,
+  "categoryName": "string"
+}
+
+### CATEGORY-UPDATE
+PUT http://localhost:2255/api/v1/category/update/3
+Content-Type: application/json
+
+{
+  "categoryId": 0,
+  "categoryName": "string"
+}
+
+### CATEGORY-GET
+GET http://localhost:2255/api/v1/category/get
+Content-Type: application/json
+
+###CATEGORY-DELETE
+DELETE http://localhost:2255/api/v1/category/delete/2
+Content-Type: application/json
+
+FOOD-CARD-CONTROLLER:
+
+### FOOD-CART-SAVE
+POST http://localhost:2255/api/v1/food/save
+Content-Type: application/json
+
+{
+  "cartId": 0,
+  "cartName": "string",
+  "itemList": [
+    {
+      "itemId": 0,
+      "itemName": "string",
+      "quantity": 0,
+      "cost": 0
+    }
+  ]
+}
+
+### FOOD-CART-SAVE-MANY
+POST http://localhost:2255/api/v1/food/addMore
+Content-Type: application/json
+
+[
+  {
+    "cartId": 0,
+    "cartName": "string",
+    "itemList": [
+      {
+        "itemId": 0,
+        "itemName": "string",
+        "quantity": 0,
+        "cost": 0
+      }
+    ]
+  }
+]
+
+###FOOD-CART-GET-ID
+GET http://localhost:2255/api/v1/food/2
+Content-Type: application/json
+
+###FOOD-CART-GET-ALL
+GET http://localhost:2255/api/v1/food/get
+Content-Type: application/json
+
+### FOOD-CART-DELETE
+DELETE http://localhost:2255/api/v1/food/delete
+Content-Type: application/json
+
+
+CUSTOMER-CONTROLLER:
+
+### CUSTOMER-SAVE
+POST http://localhost:2255//api/v1/restaurant/add
+Content-Type: application/json
+
+{
+  "restaurantId": 0,
+  "restaurantName": "string",
+  "managerName": "string",
+  "contactNumber": "5194172599",
+  "foodCart": [
+    {
+      "cartId": 0,
+      "cartName": "string",
+      "itemList": [
+        {
+          "itemId": 0,
+          "itemName": "string",
+          "quantity": 0,
+          "cost": 0
+        }
+      ]
+    }
+  ]
+}
+
+
+### FOOD-CART-SAVE-MANY
+POST http://localhost:2255/api/v1/restaurant/addMore
+Content-Type: application/json
+
+[
+  {
+    "restaurantId": 0,
+    "restaurantName": "string",
+    "managerName": "string",
+    "contactNumber": "9432343339",
+    "foodCart": [
+      {
+        "cartId": 0,
+        "cartName": "string",
+        "itemList": [
+          {
+            "itemId": 0,
+            "itemName": "string",
+            "quantity": 0,
+            "cost": 0
+          }
+        ]
+      }
+    ]
+  }
+]
+
+###CUSTOMER-UPDATE
+PUT  http://localhost:2255/api/v1/restaurant/update/2
+Content-Type: application/json
+
+{
+  "restaurantId": 0,
+  "restaurantName": "string",
+  "managerName": "string",
+  "contactNumber": "9255874040",
+  "foodCart": [
+    {
+      "cartId": 0,
+      "cartName": "string",
+      "itemList": [
+        {
+          "itemId": 0,
+          "itemName": "string",
+          "quantity": 0,
+          "cost": 0
+        }
+      ]
+    }
+  ]
+}
+
+###CUSTOMER-GET
+GET http://localhost:2255/api/v1/restaurant/get
+Content-Type: application/json
+
+###CUSTOMER-GET-MANAGER
+GET http://localhost:2255/api/v1/restaurant/get
+Content-Type: application/graphql
+
+### FOOD-CART-DELETE
+DELETE http://localhost:2255/api/v1/restaurant/deleteRestaurentId/3
+Content-Type: application/json
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
