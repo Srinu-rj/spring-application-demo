@@ -183,7 +183,7 @@ jobs:
         run: |
           echo "Setting up kubectl"
           sudo snap install kubectl --classic
-          kubectl cluster-info
+          kubectl get nodes
 
       # Update Kubeconfig -> not started
       #      - name: Update kubeconfig

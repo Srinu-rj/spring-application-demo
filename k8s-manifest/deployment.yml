@@ -2,11 +2,11 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: spring-deployment
-  namespace: {{ .Values.app.namespace }} # todo get it from Helm values.yml
+  namespace: database # todo get it from Helm values.yml
   labels:
     {{- include "spring-label-dev" . | nindent 4 }}
 spec:
-  replicas: {{ .Values.app.replicas }}
+  replicas: 3
   selector:
     matchLabels:
       app: back-end-label
