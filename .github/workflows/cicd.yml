@@ -179,11 +179,6 @@ jobs:
           chmod +x argocd
           sudo mv argocd /usr/local/bin/argocd
 
-      - name: Set up kubectl
-        run: |
-          echo "Setting up kubectl"
-          sudo snap install kubectl --classic
-          kubectl get nodes
 
       # Update Kubeconfig -> not started
       #      - name: Update kubeconfig
