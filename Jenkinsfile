@@ -8,9 +8,9 @@ pipeline {
         ECR_REPO = 'ci-cd-demo'
         IMAGE_TAG = 'V3.0'
         ECR_REGISTRY = '266735824156.dkr.ecr.ap-south-1.amazonaws.com'
-//         ECS_CLUSTER = 'iquant-ecs'
-//         ECS_SERVICE = 'iquant-ecs-svc'
-//         ALB_TARGET_GROUP_ARN = 'ecs-iquant-svc-tg'
+        ECS_CLUSTER = 'iquant-ecs'
+        ECS_SERVICE = 'iquant-ecs-svc'
+        ALB_TARGET_GROUP_ARN = 'ecs-iquant-svc-tg'
     }
 
     tools {

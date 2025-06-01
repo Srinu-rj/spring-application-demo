@@ -63,6 +63,12 @@ jobs:
         with:
           name: Package
           path: staging
+      - uses: actions/dodnload-artifact@v4
+        with:
+          name: Package
+          path:
+      - name: Deploy
+        run: echo "Deploy successfully"
 
   #      - name: Save the artifact
   #        uses: actions/upload-artifact@v4
@@ -124,7 +130,10 @@ jobs:
       #          aws-region: ${{ secrets.AWS_REGION }}
 
       - name: List Docker Images
-        run: docker images
+        run: |
+          docker images
+          docker ps -a
+          docker ps
 
       - name: Install Trivy
         run: |
