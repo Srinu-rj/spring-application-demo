@@ -1,0 +1,25 @@
+app:
+  replicas: 3
+  env: dev
+  namespace: application-namespace
+  container:
+    image: srinu641/spring-application-github:v1.0
+  computeRc:
+    limits:
+      cpu: 1.0
+      memory: 500Mi
+    requests:
+      cpu: 1.0
+      memory: 500Mi
+
+# todo if it i want to enable Hpa Auto Scaling make it true ( •_•)>⌐■-■
+hpa:
+  enabled: false  #true
+  minReplicas: 2
+  maxReplicas: 14
+  cuputi: 90
+
+---
+# helm template dev-dep -f .\k8s-chats\values.yaml .\k8s-chats\
+#Store it another file
+# helm template dev-dep -f .\k8s-chats\values.yaml .\k8s-chats\ > dev.yaml

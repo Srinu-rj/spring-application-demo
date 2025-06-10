@@ -1,0 +1,15 @@
+ {{- if .Values.hpa.enabled -}} # here spaces are most imp -> 1 spaces
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  annotation:
+    {{- include "spring-label-dev" . | nindent 4 }} # todo just create a dev production hpa for Dev Deployment
+spec:
+  scaleTargetRef:
+     apiVersion: apps/v1
+     kind: Deployment
+     name: back-end-label
+  minReplicas: {{ .Values.hpa.minReplicas }}
+  maxReplicas: {{ .Values.hpa.maxReplicas }}
+  targetCPUUtilizationPercentage: {{ .Values.hpa.cuputi }}
+   {{- end -}} # 3 spaces

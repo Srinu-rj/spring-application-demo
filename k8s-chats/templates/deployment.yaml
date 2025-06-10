@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: spring-deployment
+  namespace: {{ .Values.app.namespace }}
+  labels:
+    app:  {{- include "spring-label-dev" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.app.replicas }}
+  selector:
+    matchLabels:
+      app: back-end-label #todo  must match with application service
+  template:
+    metadata:
+      labels:
+        app: {{- include "spring-label-dev" . | nindent 8 }}
+    spec:
+      containers:
+        - name: spring-application-container
+          image: {{ .Values.app.container.image }}
+          imagePullPolicy: IfNotPresent
+          resources:
+            {{- toYaml .Values.app.computeRc | nindent 12 }}
+          ports:
+            - containerPort: 2255
+---
+

@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: spring-mysql-k8s-deployment
+#  namespace: application
+  labels:
+    app: spring-mysql-k8s
+spec:
+  replicas: 10
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 3
+      maxUnavailable: 1
+  selector:
+    matchLabels:
+      app: spring-mysql-k8s
+  template:
+    metadata:
+      labels:
+        app: spring-mysql-k8s
+    spec:
+      restartPolicy: Always
+      containers:
+        - name: spring-container-demo-app
+          image: srinu641/spring-application-github:v1.0
+          #TODO: Always -> every time the kubelet launches a container, the kubelet queries the container image registry to resolve the name to an image digest.
+          #TODO: Never-> the kubelet does not try fetching the image. If the image is somehow already present locally
+          #TODO: IfNotPresent -> the image is pulled only if it is not already present locally.
+          imagePullPolicy: Never #Always
+          ports:
+            - containerPort: 2255
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "250m"
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: service-application
+  #  namespace: web-application
+  labels:
+    app: service-application
+spec:
+  type: NodePort
+  ports:
+    - port: 2255
+      targetPort: 2255
+  selector:
+    app: spring-mysql-k8s
+---
