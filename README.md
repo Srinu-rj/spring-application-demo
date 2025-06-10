@@ -1,3 +1,24 @@
+## 🔧 Features
+
+- ✅ Google OAuth 2.0 login
+- ✅ Spring Security integration
+- ✅ Access public and private endpoints
+- ✅ Retrieve authenticated user profile data
+- ✅ REST APIs for user data with mysql
+- ✅ Deployed a spring boot application on Kubernetes
+
+# 🚀 Technologies Used
+
+- ✅ Java 17+
+- ✅ Spring Boot 3.x
+- ✅ Spring Security
+- ✅ OAuth 2.0 Client (Google)
+- ✅ Maven
+- ✅ Docker
+- ✅ Argo Cd
+- ✅ Aws EKS | ECR | ECS
+
+
 # Testing Rest APIs:
 ![img_10.png](img_10.png)
 ![img_11.png](img_11.png)
@@ -21,3 +42,5 @@ http://localhost:5601/?code=615477
 ![img_7.png](img_7.png)
 # Implemented Redis Cache to spring Rest APIS: 
 ![img_9.png](img_9.png)
+# Kubernetes Architecture 
+![img_15.png](img_15.png)

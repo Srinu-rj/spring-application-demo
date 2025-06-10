@@ -1,8 +1,11 @@
 package com.foodapp.springfoodapp.controller;
 
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+
+import java.util.Map;
 
 @Controller
 public class HomePage {
@@ -10,5 +13,16 @@ public class HomePage {
     @GetMapping("/")
     public String home() {
         return "hemo"; // Returns index.html from templates folder
+    }
+
+    @GetMapping("/private")
+    public String privateEndpoint(@AuthenticationPrincipal OAuth2User principal) {
+        return "Private content for: " + principal.getAttributes().get("name");
+    }
+
+    //TODO: Get Oauth user Deatiles
+    @GetMapping("/profile")
+    public Map<String, Object> userProfile(@AuthenticationPrincipal OAuth2User principal) {
+        return principal.getAttributes();
     }
 }
