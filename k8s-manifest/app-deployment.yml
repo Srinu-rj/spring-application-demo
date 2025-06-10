@@ -26,7 +26,13 @@ spec:
       #      restartPolicy: Always
       containers:
         - name: spring-container-demo-app
-          image: srinu641/spring-application-k8s:v1.0
+          image: srinu641/spring-application-github:v2.0
+          command: ["java"]
+          args:
+            - "-Xms256m"
+            - "-Xmx512m"
+            - "-jar"
+            - "/app/spring-application-k8s.jar"
           #TODO: Always -> every time the kubelet launches a container, the kubelet queries the container image registry to resolve the name to an image digest.
           #TODO: Never-> the kubelet does not try fetching the image. If the image is somehow already present locally
           #TODO: IfNotPresent -> the image is pulled only if it is not already present locally.
@@ -74,3 +80,33 @@ spec:
   selector:
     app: demo-app
 ---
+
+
+#1️⃣ Default Java application run
+#command: ["java", "-jar", "/app/my-spring-boot-app.jar"]
+#2️⃣ Run with a specific Spring profile
+#command: ["java", "-jar", "/app/my-spring-boot-app.jar", "--spring.profiles.active=prod"]
+#3️⃣ Run with JVM memory limits
+#command: ["java", "-Xms256m", "-Xmx512m", "-jar", "/app/my-spring-boot-app.jar"]
+#6️⃣ Run with logging config
+#command: ["java", "-Dlogging.config=/app/logback.xml", "-jar", "/app/my-spring-boot-app.jar"]
+#
+#
+#command: ["java"]
+#args: ["-jar", "/app/my-spring-boot-app.jar"]
+#
+#command: ["java"]
+#args: ["-jar", "/app/my-spring-boot-app.jar", "--spring.profiles.active=prod"]
+#
+#command: ["java"]
+#args:
+#  - "-Xms256m"
+#  - "-Xmx512m"
+#  - "-jar"
+#  - "/app/my-spring-boot-app.jar"
+#command: ["java"]
+#args:
+#  - "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005"
+#  - "-jar"
+#  - "/app/my-spring-boot-app.jar"
+#

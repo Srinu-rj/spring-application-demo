@@ -188,30 +188,30 @@ jobs:
           chmod +x argocd
           sudo mv argocd /usr/local/bin/argocd
 
-      - name: Install AWS CLI
-        run: |
-          curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-          unzip awscliv2.zip
-          sudo ./aws/install
+#      - name: Install AWS CLI
+#        run: |
+#          curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+#          unzip awscliv2.zip
+#          sudo ./aws/install
 
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v2
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ap-south-1
+#      - name: Configure AWS credentials
+#        uses: aws-actions/configure-aws-credentials@v2
+#        with:
+#          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+#          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+#          aws-region: ap-south-1
           
-      - name: Deploy to EKS
-        run: |
-          alias k=kubectl
-          k create namespsce database-namespace
-          k apply -f file_name 
-          kubectl apply -f ds.yml 
+#      - name: Deploy to EKS
+#        run: |
+#          alias k=kubectl
+#          k create namespsce database-namespace
+#          k apply -f file_name
+#          kubectl apply -f ds.yml
 
-      - name: Configure kubeconfig
-        run: |
-          mkdir -p $HOME/.kube
-          echo "${{ secrets.EKS_KUBECONFIG }}" > $HOME/.kube/config    
+#      - name: Configure kubeconfig
+#        run: |
+#          mkdir -p $HOME/.kube
+#          echo "${{ secrets.EKS_KUBECONFIG }}" > $HOME/.kube/config
 
       # Update Kubeconfig -> not started
       #      - name: Update kubeconfig
