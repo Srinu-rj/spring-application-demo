@@ -6,6 +6,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,11 +16,8 @@ import java.util.List;
 @RequestMapping("${api.v1.prefix}/category")
 public class CategoryController {
 
-    private CategoryService categoryService;
+    private final CategoryService categoryService;
 
-    public CategoryController(CategoryService categoryService) {
-        this.categoryService = categoryService;
-    }
 
     @PostMapping("/addCategory")
     public ResponseEntity<Category> addCategory(@RequestBody @Valid Category category) {
@@ -39,14 +37,22 @@ public class CategoryController {
         return ResponseEntity.status(HttpStatus.CREATED).body(category);
     }
 
+//    @DeleteMapping("/delete/{categoryId}")
+//    public ResponseEntity<String> deleteCategory(@PathVariable int categoryId) {
+//        String deleteCategoryId = categoryService.deleteCategoryById(categoryId);
+//        return ResponseEntity.status(HttpStatus.ACCEPTED).body(deleteCategoryId);
+//    }
+
+
     @DeleteMapping("/delete/{categoryId}")
-    public ResponseEntity<String> deleteCategory(@PathVariable Integer categoryId) {
+//    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<String> deleteCategory(@PathVariable @Validated Integer categoryId) {
         String deleteCategoryId = categoryService.deleteCategoryById(categoryId);
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(deleteCategoryId);
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<Category> updateAddress(@RequestBody Category updateCategory, Integer id) {
+    public ResponseEntity<Category> updateAddress(@RequestBody Category updateCategory, @PathVariable Integer id) {
         Category categoryUpdate = categoryService.updatecategory(updateCategory, id);
         return ResponseEntity.status(HttpStatus.CREATED).body(categoryUpdate);
     }

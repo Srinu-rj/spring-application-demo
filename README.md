@@ -44,3 +44,5 @@ http://localhost:5601/?code=615477
 ![img_9.png](img_9.png)
 # Kubernetes Architecture 
 ![img_15.png](img_15.png)
+# Monitoring Observabilities of Spring Boot Application 
+![img_16.png](img_16.png)

@@ -1,0 +1,33 @@
+In Spring JPA with Hibernate, the ddl-auto property is used to control how Hibernate handles the database schema. It is configured in the application.properties or application.yml file under the spring.jpa.hibernate namespace. Here are the common options for ddl-auto and their behavior:
+
+Common Values for spring.jpa.hibernate.ddl-auto
+
+None:
+-->
+Hibernate does not perform any schema management.
+Use this when you want to manage the schema manually.
+
+Validate:
+-->
+Hibernate validates the schema against the database.
+If the schema does not match, an exception is thrown.
+Useful in production to ensure the database schema is correct.
+
+update:
+-->
+Hibernate updates the schema to match the entity definitions.
+Non-destructive changes are applied (e.g., adding columns).
+Use cautiously in development, as it may not handle complex schema changes well.
+
+create
+-->
+Hibernate drops the existing schema and creates a new one every time the application starts.
+Use this in development/testing environments where data persistence is not required.
+
+create-drop:
+-->
+Similar to create, but the schema is dropped when the application shuts down.
+Useful for integration tests where a clean database is needed for each test run.
+
+Data Definition Language(DDL) - related to database schema creating
+Data Manipulation Language(DML) - related to importing data

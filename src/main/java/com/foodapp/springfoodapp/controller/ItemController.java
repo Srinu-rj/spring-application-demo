@@ -2,7 +2,6 @@ package com.foodapp.springfoodapp.controller;
 
 
 import com.foodapp.springfoodapp.entiry.Item;
-import com.foodapp.springfoodapp.exception.UserException;
 
 import com.foodapp.springfoodapp.service.ItemService;
 import jakarta.validation.Valid;
@@ -52,7 +51,7 @@ public class ItemController {
     public ResponseEntity<Item> updateItem(@RequestBody Item updateitem,
                                            @PathVariable int id){
 
-        Item updateItems = itemService.updateItems(updateitem, id);
+        itemService.updateItems(updateitem, id);
         return ResponseEntity.status(HttpStatus.CREATED).body(updateitem);
     }
 

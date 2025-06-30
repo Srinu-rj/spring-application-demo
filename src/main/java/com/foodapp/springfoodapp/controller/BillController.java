@@ -1,25 +1,18 @@
 package com.foodapp.springfoodapp.controller;
 
 
-import com.foodapp.springfoodapp.dto.BillDto;
 import com.foodapp.springfoodapp.entiry.Bill;
-import com.foodapp.springfoodapp.exception.ResourceNotFoundException;
-import com.foodapp.springfoodapp.request.ApiResponse;
 import com.foodapp.springfoodapp.service.BillService;
-import io.swagger.annotations.Api;
 import jakarta.validation.Valid;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 
 @RestController
@@ -28,14 +21,16 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 @RequiredArgsConstructor
 public class BillController {
 
-    @Autowired
-    private BillService billService;
+    private final BillService billService;
 
-    @PostMapping("/add")
-    public ResponseEntity<Bill> addBill(@RequestBody @Valid Bill bill) {
-        Bill saveBill = billService.addBill(bill);
-        return new ResponseEntity<>(saveBill, HttpStatus.CREATED);
-    }
+// import org.springframework.validation.annotation.Validated
+// import org.springframework.web.bind.annotation.RequestBody
+
+@PostMapping("/add")
+public ResponseEntity<Bill> addBill(@RequestBody @Validated Bill bill) {
+    Bill saveBill = billService.addBill(bill);
+    return new ResponseEntity<>(saveBill, HttpStatus.CREATED);
+}
 
     @PostMapping("/addList")
     public ResponseEntity<List<Bill>> addBillsList(@RequestBody @Valid List<Bill> bills) {

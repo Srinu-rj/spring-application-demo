@@ -17,6 +17,11 @@ public class FoodCartController {
 
     private final FoodCartService cartService;
 
+// Import statements
+// import org.springframework.security.web.csrf.CsrfFilter;
+// import org.springframework.security.web.csrf.CsrfTokenRepository;
+// import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
+
     @PostMapping("/save")
     public ResponseEntity<FoodCart> saveCart(@RequestBody @Valid FoodCart foodCart) {
         FoodCart saveCart = cartService.savecart(foodCart);
@@ -30,7 +35,7 @@ public class FoodCartController {
     }
 
     @GetMapping("/{foodId}")
-    public ResponseEntity<FoodCart> getFoodById(@PathVariable int foodId)  {
+    public ResponseEntity<FoodCart> getFoodById(@PathVariable int foodId) {
         FoodCart getId = cartService.getfoodByid(foodId);
         return ResponseEntity.status(HttpStatus.CREATED).body(getId);
     }
@@ -43,13 +48,13 @@ public class FoodCartController {
 
     @DeleteMapping("/delete{cartId}")
     public ResponseEntity<String> deleteFoodid(@PathVariable("cartId") Integer cartId) {
-        String deleteFoodId=cartService.deleteId(cartId);
+        String deleteFoodId = cartService.deleteId(cartId);
         return ResponseEntity.status(HttpStatus.CREATED).body(deleteFoodId);
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<FoodCart> updateFoodcart(@RequestBody FoodCart foodCart, @RequestParam Integer id) {
-        FoodCart updateFoodCart=cartService.updateFoodCartId(foodCart, id);
+    public ResponseEntity<FoodCart> updateFoodCart(@RequestBody FoodCart foodCart, @PathVariable Integer id) {
+        FoodCart updateFoodCart = cartService.updateFoodCartId(foodCart, id);
         return ResponseEntity.status(HttpStatus.CREATED).body(updateFoodCart);
     }
 }

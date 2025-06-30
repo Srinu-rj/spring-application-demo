@@ -1,4 +1,4 @@
-package com.foodapp.springfoodapp.config.corsConfig;//package com.foodapp.springfoodapp.config.corsConfig;
+package com.foodapp.springfoodapp.config.corsConfig;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

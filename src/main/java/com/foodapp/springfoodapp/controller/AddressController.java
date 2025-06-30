@@ -1,22 +1,16 @@
 package com.foodapp.springfoodapp.controller;
 
-import com.foodapp.springfoodapp.dto.AddressDto;
 import com.foodapp.springfoodapp.entiry.Address;
-import com.foodapp.springfoodapp.exception.ResourceNotFoundException;
-import com.foodapp.springfoodapp.request.ApiResponse;
 import com.foodapp.springfoodapp.service.AddressServices;
-import io.swagger.annotations.Api;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static org.springframework.http.HttpStatus.CREATED;
-import static org.springframework.http.HttpStatus.NOT_FOUND;
+
 
 @RestController
 @RequiredArgsConstructor
@@ -24,8 +18,8 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 //@CrossOrigin(origins = "http://allowed.origin.com")
 public class AddressController {
 
-    @Autowired
-    private AddressServices addressServices;
+    private final AddressServices addressServices;
+
 
     @GetMapping("/find/all/address/quary")
     public ResponseEntity<List<Address>> findAllByJpql() {
@@ -35,6 +29,7 @@ public class AddressController {
 
     @PostMapping("/add/list/address")
     public ResponseEntity<List<Address>> saveAddress(@RequestBody @Valid List<Address> addresses) {
+
         List<Address> address = addressServices.saveAddress(addresses);
         return new ResponseEntity<>(address, HttpStatus.CREATED);
     }
@@ -52,7 +47,6 @@ public class AddressController {
     }
 
 
-    //TODO THE API SEARCH CITY
     @GetMapping("/get/city/query/{keyWord}")
     public ResponseEntity<Address> getCityByQuery(@PathVariable String keyWord) {
 
@@ -60,7 +54,6 @@ public class AddressController {
         return new ResponseEntity<>(address, HttpStatus.CREATED);
     }
 
-    //TODO THE API FINDS ADDRESS ID
     @GetMapping("/{id}")
     public ResponseEntity<Address> findByAddressId(@PathVariable int id) {
         Address address = addressServices.findByIdAddress(id);
@@ -69,7 +62,7 @@ public class AddressController {
 
     @DeleteMapping("/delete/{addressId}")
     public ResponseEntity<String> deleteBill(@PathVariable int addressId) {
-        String deleteAddress = addressServices.deleteAddress(addressId);
+        addressServices.deleteAddress(addressId);
         return ResponseEntity.status(HttpStatus.CREATED).body("");
     }
 
@@ -78,6 +71,7 @@ public class AddressController {
         Address address = addressServices.updateAddress(updateAddress, id);
         return new ResponseEntity<>(address, HttpStatus.OK);
     }
+
 //    @PostMapping("/add")
 //    public ResponseEntity<Address> addAddress(@RequestBody String area,
 //                                              @RequestBody int address_Id,
