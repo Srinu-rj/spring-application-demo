@@ -14,11 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 @SpringBootApplication
 @EnableCaching
 public class SpringFoodAppApplication {
-// TODO to start docker MYSQL IMAGE -> docker start 2cf95078648b
-//todo    mvn spring-boot:run -> http://192.168.3.189:8998/
-//   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
 
-    // todo github token  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
     public static void main(String[] args) {
         SpringApplication.run(SpringFoodAppApplication.class, args);
         System.out.println("SPRING-BOOT-APPLICATION");

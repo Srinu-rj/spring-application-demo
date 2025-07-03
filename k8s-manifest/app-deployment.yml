@@ -14,7 +14,7 @@ spec:
       maxUnavailable: 20% # TODO: The value can be an absolute number (for example, 5) or a percentage of desired Pods (for example, 10%).
       # TODO: maxSurge is an optional field that specifies the maximum number of Pods that can be created over the desired number of Pods.
       maxSurge: 20% # TODO: The value can be an absolute number (for example, 5) or a percentage of desired Pods (for example, 10%).
-  replicas: 10
+  replicas: 3
   selector:
     matchLabels:
       app: spring-mysql
@@ -25,29 +25,46 @@ spec:
     spec:
       containers:
         - name: spring-container-demo-app
-          image: srinu641/spring-application-github:v2.0
+          image: srinu641/spring-application-github:v1.01
           #TODO: Always -> every time the kubelet launches a container, the kubelet queries the container image registry to resolve the name to an image digest.
           #TODO: Never-> the kubelet does not try fetching the image. If the image is somehow already present locally
           #TODO: IfNotPresent -> the image is pulled only if it is not already present locally.
           imagePullPolicy: IfNotPresent #Always
           ports:
             - containerPort: 2255
-#          resources:
-#            requests:
-#              memory: "64Mi"
-#              cpu: "250m"
-#            limits:
-#              memory: "128Mi"
-#              cpu: "100m"
-          env:   # Setting Enviornmental Variables
-            - name: DB_HOST   # Setting Database host address from configMap
-              value: mysql
-            - name: DB_NAME  # Setting Database name from configMap
-              value: spring
-            - name: DB_USERNAME  # Setting Database username from Secret
-              value: admin
-            - name: DB_PASSWORD # Setting Database password from Secret
-              value: admin1234aA
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "250m"
+            limits:
+              memory: "128Mi"
+              cpu: "250m"
+          env:
+            - name: POSTGRES_DB
+#              value: spring
+              valueFrom:
+                configMapKeyRef:
+                  name: postgres-config
+                  key: POSTGRES_DB
+            - name: POSTGRES_USER
+#              value: postgres
+              valueFrom:
+                configMapKeyRef:
+                  name: postgres-config
+                  key: POSTGRES_USER
+            - name: POSTGRES_PASSWORD
+#              value: SRINU1234
+              valueFrom:
+                configMapKeyRef:
+                  name: postgres-config
+                  key: POSTGRES_PASSWORD
+          volumeMounts:
+            - name: postgres-storage
+              mountPath: /var/lib/postgresql/data
+      volumes:
+        - name: postgres-storage
+          persistentVolumeClaim:
+            claimName: postgres-pvc
 ---
 apiVersion: v1
 kind: Service
@@ -59,7 +76,8 @@ metadata:
 spec:
   type: NodePort
   ports:
-    - port: 2255
+    - protocol: TCP
+      port: 2255
       targetPort: 2255
   selector:
     app: spring-mysql # TODO Should be match with deployment label name:
