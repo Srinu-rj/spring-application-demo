@@ -50,3 +50,4 @@ http://localhost:5601/?code=615477
 # Deploy Spring boot application with postgres SQL
 ![img_18.png](img_18.png)
 ![img_17.png](img_17.png)
+![img_20.png](img_20.png)

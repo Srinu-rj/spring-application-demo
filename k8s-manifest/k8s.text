@@ -1,0 +1,11 @@
+kubectl create secret docker-registry regcred \
+  --docker-username=yourname \
+  --docker-password=yourpassword \
+  --docker-email=you@example.com \
+  --docker-server=https://index.docker.io/v1/
+
+echo YWRtaW4= | base64 --decode
+# Output: admin
+
+echo cGFzc3dvcmQ= | base64 --decode
+# Output: password

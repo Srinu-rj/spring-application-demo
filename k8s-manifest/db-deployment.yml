@@ -28,23 +28,23 @@ spec:
           image: postgres:latest
           env:
             - name: POSTGRES_DB
-              value: spring
-#              valueFrom:
-#                configMapKeyRef:
-#                  name: postgres-config
-#                  key: POSTGRES_DB
+              # value: spring
+              valueFrom:
+                configMapKeyRef:
+                  name: postgres-config
+                  key: POSTGRES_DB
             - name: POSTGRES_USER
-              value: postgres
-#              valueFrom:
-#                configMapKeyRef:
-#                  name: postgres-config
-#                  key: POSTGRES_USER
+              # value: postgres
+              valueFrom:
+                configMapKeyRef:
+                  name: postgres-config
+                  key: POSTGRES_USER
             - name: POSTGRES_PASSWORD
-              value: SRINU1234
-#              valueFrom:
-#                configMapKeyRef:
-#                  name: postgres-config
-#                  key: POSTGRES_PASSWORD
+              # value: SRINU1234
+              valueFrom:
+                configMapKeyRef:
+                  name: postgres-config
+                  key: POSTGRES_PASSWORD
           volumeMounts:
             - name: postgres-storage
               mountPath: /var/lib/postgresql/data
