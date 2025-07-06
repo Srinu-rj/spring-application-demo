@@ -34,44 +34,39 @@ jobs:
       - name: Setup Maven
         uses: stCarolas/setup-maven@v4.4
         with:
-          maven-version: 3.8.2
+          maven-version: 3.9.9 #todo Use Updated Version
       - name: Build and Run Unit Tests
-        run: mvn clean package
-      - uses: actions/upload-artifact@v4
-        with:
-          name: Package
-          path: staging
-      - uses: actions/download-artifact@v4
-        with:
-          name: Package
-          path:
-      - name: Deploy
-        run: echo "Deploy successfully"
+        run: mvn clean install
+#      - uses: actions/upload-artifact@v4
+#        with:
+#          name: Package
+#          path: staging
+#      - uses: actions/download-artifact@v4
+#        with:
+#          name: Package
+#          path:
+#      - name: Deploy
+#        run: echo "Deploy successfully"
 #      - name: SonarCloud Scan
 #        uses: SonarSource/sonarcloud-github-action@master
 #        env:
 #          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 #          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-
-  publish_docker_image:
-    runs-on: ubuntu-latest
-    needs: Building-and-Testing
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
-          fetch-depth: 0
-      - name: Log in to DockerHub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-
-      - name: Build and Push Docker Image
+      #TODO--> Docker Build Tag Push
+      - name: Login to docker hub
+        run: docker login -u "${{ secrets.DOCKER_USERNAME }}" -p "${{ secrets.DOCKERHUB_TOKEN }}"
+      - name: Build docker image
+        run: docker build -t spring-application-github .
+      - name: Tag docker image
+        run: docker tag spring-application-github srinu641/spring-application-github:V1.0
+      - name: Push docker image
+        run: docker push srinu641/spring-application-github:V1.0
+      - name: Getting Docker Images
         run: |
-          docker build -t spring-application-github .
-          docker tag spring-application-github srinu641/spring-application-github:v3.0
-          docker push srinu641/spring-application-github:v3.0
+          docker images
+          docker inspect srinu641/spring-application-github:V1.0
+          docker ps -a
+          
 
       #      #Todo  Set up AWS Credentials -> not started
       #      - name: Configure AWS Credentials
@@ -92,12 +87,6 @@ jobs:
       #          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
       #          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       #          aws-region: ${{ secrets.AWS_REGION }}
-
-      - name: List Docker Images
-        run: |
-          docker images
-          docker ps -a
-          docker ps
 
       - name: Install Trivy
         run: |
@@ -133,7 +122,7 @@ jobs:
 
   k8s-deploy:
     runs-on: ubuntu-latest
-    needs: publish_docker_image
+    needs: Building-and-Testing
     steps:
       - uses: actions/checkout@v4
         with:
