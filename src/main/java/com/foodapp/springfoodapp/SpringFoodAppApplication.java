@@ -18,6 +18,8 @@ public class SpringFoodAppApplication {
     public static void main(String[] args) {
         SpringApplication.run(SpringFoodAppApplication.class, args);
         System.out.println("SPRING-BOOT-APPLICATION");
+
+
     }
 
 
