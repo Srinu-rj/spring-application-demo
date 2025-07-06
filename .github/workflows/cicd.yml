@@ -180,7 +180,7 @@ jobs:
           cat k8s-manifest/app-deployment.yml
           cat k8s-manifest/db-deployment.yml
           pwd
-#          sed -i "s+${{ secrets.DOCKERHUB_USERNAME }}/my-app.*+${{ secrets.DOCKERHUB_USERNAME }}/my-app:${{ github.sha }}+g" manifest/deployment.yaml
+          sed -i "s+${{ secrets.DOCKERHUB_USERNAME }}/spring-application-demo.*+${{ secrets.DOCKERHUB_USERNAME }}/spring-application-demo:${{ github.sha }}+g" k8s-manifest/app-deployment.yml
 #          cat manifest/deployment.yaml
 
       - name: Commit and Push Updated deployment.yaml
