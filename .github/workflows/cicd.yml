@@ -167,13 +167,13 @@ jobs:
 
 
 
-      - name: Update deployment.yaml with newly built image
-        run: |
-          git config user.name "${{ secrets.GIT_USERNAME }}"
-          git config user.email "${{ secrets.GIT_EMAIL }}"
-          git fetch origin
-          git checkout master
-          git pull origin master
+      # - name: Update deployment.yaml with newly built image
+      #   run: |
+      #     git config user.name "${{ secrets.GIT_USERNAME }}"
+      #     git config user.email "${{ secrets.GIT_EMAIL }}"
+      #     git fetch origin
+      #     git checkout master
+      #     git pull origin master
 #          pwd
 #          cat k8s-manifest/app-deployment.yml
 #          cat k8s-manifest/db-deployment.yml
@@ -181,17 +181,17 @@ jobs:
 #          sed -i "s+${{ secrets.DOCKERHUB_USERNAME }}/my-app.*+${{ secrets.DOCKERHUB_USERNAME }}/my-app:${{ github.sha }}+g" manifest/deployment.yaml
 #          cat manifest/deployment.yaml
 
-      - name: Commit and Push Updated deployment.yaml
-        run: |
-          git config user.name "${{ secrets.GIT_USERNAME }}"
-          git config user.email "${{ secrets.GIT_EMAIL }}"
-          git remote set-url origin https://$GIT_USERNAME:$PERSONAL_ACCESS_TOKEN@github.com/${{ github.repository }}.git
-          git fetch origin
-          git checkout master
-          git pull origin master
-          git add .
-          git commit -m "Update image to spring-application-demo:${{ github.sha }}"
-          git push origin master
+      # - name: Commit and Push Updated deployment.yaml
+      #   run: |
+      #     git config user.name "${{ secrets.GIT_USERNAME }}"
+      #     git config user.email "${{ secrets.GIT_EMAIL }}"
+      #     git remote set-url origin https://$GIT_USERNAME:$PERSONAL_ACCESS_TOKEN@github.com/${{ github.repository }}.git
+      #     git fetch origin
+      #     git checkout master
+      #     git pull origin master
+      #     git add .
+      #     git commit -m "Update image to spring-application-demo:${{ github.sha }}"
+      #     git push origin master
 #
 #      - name: Refresh ArgoCD App and Sync
 #        run: argocd app sync my-app
