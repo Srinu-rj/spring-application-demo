@@ -19,6 +19,9 @@ env:
   ECS_CONTAINER_NAME: ${{ secrets.ECS_CONTAINER_NAME }}
   GIT_EMAIL: ${{ secrets.GIT_EMAIL}}
   GIT_USERNAME: ${{ secrets.GIT_USERNAME}}
+  ARGOCD_SERVER: ${{ secrets.ARGOCD_SERVER }}
+  ARGOCD_USERNAME: ${{ secrets.ARGOCD_USERNAME }}
+  ARGOCD_PASSWORD: ${{ secrets.ARGOCD_PASSWORD }}
 
 jobs:
   Building-and-Testing:
@@ -136,11 +139,6 @@ jobs:
           chmod +x argocd
           sudo mv argocd /usr/local/bin/argocd
 
-#      - name: Install AWS CLI
-#        run: |
-#          sudo snap install aws-cli --classic
-#          sudo apt install awscli
-#          aws --version
 #
 #      - name: Configure AWS credentials
 #        uses: aws-actions/configure-aws-credentials@v2
