@@ -104,6 +104,7 @@ jobs:
         run: |
           docker images
           docker ps -a
+
 #      - name: Run aOne-line Script
 #        run: sh ./sonarqube-install.sh
 
@@ -121,7 +122,8 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
         with:
-        terraform_version: 1.3.0
+         terraform_version: 1.3.0
+        run: terraform -version
 
 #      - name: Terraform Init
 #        run: terraform init
