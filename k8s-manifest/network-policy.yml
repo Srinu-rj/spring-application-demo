@@ -10,3 +10,40 @@ spec:
     - Egress
 
 ---
+# 🔒 This blocks all incoming traffic to PostgreSQL pods.
+#    Deny All Ingress to PostgreSQL by Default
+
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: deny-all-ingress
+  namespace: postgres-namespace
+spec:
+  podSelector: {}   # Selects all pods
+  policyTypes:
+    - Ingress
+---
+#  Allow Only Spring Boot Namespace Ingress by Label/IP
+#  Option 1️⃣: Allow based on Namespace + Pod Labels:
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-springboot-ingress
+  namespace: postgres-namespace
+spec:
+  podSelector:
+    matchLabels:
+      app: postgres
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              name: spring-boot-namespace
+          podSelector:
+            matchLabels:
+              app: spring-boot
+      ports:
+        - protocol: TCP
+          port: 5432
+
+---

@@ -30,7 +30,7 @@ spec:
           #TODO: Always -> every time the kubelet launches a container, the kubelet queries the container image registry to resolve the name to an image digest.
           #TODO: Never-> the kubelet does not try fetching the image. If the image is somehow already present locally
           #TODO: IfNotPresent -> the image is pulled only if it is not already present locally.
-          imagePullPolicy: IfNotPresent #Always
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 2255
           resources:
@@ -56,7 +56,7 @@ spec:
             - name: POSTGRES_PASSWORD
 #              value: SRINU1234
               valueFrom:
-                configMapKeyRef:
+                configMapKeyRef: #Todo secretKeyRef -> configMap not good to store DB passwords
                   name: postgres-config
                   key: POSTGRES_PASSWORD
           volumeMounts:

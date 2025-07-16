@@ -10,7 +10,7 @@ spec:
       storage: 10Gi
 ---
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: postgres-deployment
 spec:
@@ -26,6 +26,7 @@ spec:
       containers:
         - name: postgres
           image: postgres:latest
+          imagePullPolicy: "IfNotPresent"
           env:
             - name: POSTGRES_DB
               # value: spring
@@ -63,4 +64,17 @@ spec:
   - port: 5432
  selector:
   app: postgres
+---
+# TODO  Other example of PostgresSql Service
+#apiVersion: v1
+#kind: Service
+#metadata:
+#  name: postgres
+#spec:
+#  selector:
+#    app: postgres
+#  ports:
+#    - protocol: TCP
+#      port: 5432
+#      targetPort: 5432
 ---

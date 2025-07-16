@@ -1,115 +1,148 @@
-name: Spring boot Java CI CD with Docker
+name: spring-boot Github Actions
 
 on:
   push:
     branches: [ "master" ]
+  # TODO [ minute (0-59) hour (0 - 23)	day of the month (1 - 31)	month (1 - 12)	day of the week (0 - 6) ]
+  # TODO Every minute, only on Friday, only in August
+  schedule:
+    - cron: '* * * 8 5'
 
 env:
   PERSONAL_ACCESS_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
   DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-  DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
   DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+  DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+  JAVA_VERSION: 21 #${{ environment.JAVA_VERSION }}
+  MAVEN_VERSION: 3.8.2
+  SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+  SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+  JF_USER: ${{ secrets.JF_USER }}
+  JF_PASSWORD: ${{ secrets.JF_PASSWORD }}
+  JF_URL: ${{ secrets.JF_URL}}
+  AWS_REGION: ${{ secrets.AWS_REGION }}
+  AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-  AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
-  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-  ECR_REPOSITORY_URI: ${{ secrets.ECR_REPOSITORY_URI }}
+  AWS_SECRETS_KEY: ${{ secrets.AWS_ACCESS_KEY_ID}}
+  ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
   ECS_CLUSTER: ${{ secrets.ECS_CLUSTER }}
   ECS_SERVICE: ${{ secrets.ECS_SERVICE }}
   ECS_TASK_DEFINITION_FAMILY: ${{ secrets.ECS_TASK_DEFINITION_FAMILY }}
   ECS_CONTAINER_NAME: ${{ secrets.ECS_CONTAINER_NAME }}
-  GIT_EMAIL: ${{ secrets.GIT_EMAIL}}
-  GIT_USERNAME: ${{ secrets.GIT_USERNAME}}
-  ARGOCD_SERVER: ${{ secrets.ARGOCD_SERVER }}
-  ARGOCD_USERNAME: ${{ secrets.ARGOCD_USERNAME }}
-  ARGOCD_PASSWORD: ${{ secrets.ARGOCD_PASSWORD }}
+  ARGO_CD_SERVER: ${{ secrets.ARGO_CD_SERVER }}
+  ARGO_CD_USERNAME: ${{ secrets.ARGO_CD_USERNAME }}
+  ARGO_CD_PASSWORD: ${{ secrets.ARGO_CD_PASSWORD }}
+  GIT_USERNAME: ${{ secrets.GIT_USERNAME }}
+  GIT_EMAIL: ${{ secrets.GIT_EMAIL }}
 
 jobs:
   Building-and-Testing:
     runs-on: ubuntu-latest
+    #Todo Not strictly needed for Docker Hub, but good to include if you might switch.
+    #Todo Required to push to GitHub Container Registry (ghcr.io)
+    permissions:
+      contents: read
+      packages: write
     steps:
-      #TODO action is used to download your repository's code onto the runner so that it can be built, tested, or deployed
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
-          fetch-depth: 0
+      - name: Run a script
+        run: echo "This workflow runs at Everyone One Hour "
 
       - name: Checkout code
         uses: actions/checkout@v4
-      - name: Set up JDK 17
+        with:
+          # Todo Disabling shallow clones is recommended for improving the relevancy of reporting
+          fetch-depth: 0
+
+      - name: Set up JDK 21
         uses: actions/setup-java@v4
         with:
-          distribution: 'adopt'  # temurin
-          java-version: '21'
+          java-version: ${{ env.JAVA_VERSION }}   # Todo Make It '21'
+          distribution: 'temurin' # 'adopt'
           architecture: x64
+          cache: 'maven' # Strongly recommended for faster builds!
+          cache-dependency-path: 'pom.xml' # Or '**/pom.xml' for multi-module projects
+
       - name: Setup Maven
         uses: stCarolas/setup-maven@v4.4
         with:
-          maven-version: 3.9.9 #todo Use Updated Version
-      - name: Build and Run Unit Tests
-        run: mvn clean install
-      #      - uses: actions/upload-artifact@v4
-      #        with:
-      #          name: Package
-      #          path: staging
-      #      - uses: actions/download-artifact@v4
-      #        with:
-      #          name: Package
-      #          path:
-      #      - name: Deploy
-      #        run: echo "Deploy successfully"
+          maven-version: ${{ env.MAVEN_VERSION }} #3.8.2
 
-      #      - name: SonarCloud Scan
-      #        uses: SonarSource/sonarcloud-github-action@master
-      #        env:
-      #          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      #TODO--> Docker Build Tag Push
-      #      - name: Login to docker hub
-      #        uses: actions/checkout@v4
-      #        run: docker login -u "${{ secrets.DOCKER_USERNAME }}" -p "${{ secrets.DOCKERHUB_TOKEN }}"
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - name: Build with Maven
+        run: mvn clean install
+
+      - name: Run Unit Tests
+        run: mvn test
+
+      - name: Run Integration Tests
+        run: |
+          mvn clean verify
+          mvn clean integration-test
+
+      - name: Run Acceptance Tests
+        run: mvn clean verify -Pacceptance-tests
+
+      - name: Run Performance Tests
+        run: mvn clean verify -Pperf-tests
+
+      #      - name: Run OWASP Dependency Check
+      #        run: mvn org.owasp:dependency-check-maven:check -Dformat=HTML -DoutputDirectory=target/dependency-check
 
       - name: Log in to Docker Hub
         uses: docker/login-action@v3 # Using the official Docker login action
         with:
           username: ${{ secrets.DOCKER_USERNAME }} # Accessing the username from GitHub Secrets
           password: ${{ secrets.DOCKER_PASSWORD }} # Accessing the password/token from GitHub Secrets
-
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
       - name: Build docker image
-        run: docker build -t spring-application-github .
+        run: docker build -t spring-application-k8s .
       - name: Tag docker image
-        run: docker tag spring-application-github srinu641/spring-application-github:V1.0
+        run: docker tag spring-application-k8s srinu641/spring-application-k8s:v3.02
       - name: Push docker image
-        run: docker push srinu641/spring-application-github:V1.0
+        run: docker push srinu641/spring-application-k8s:v3.02
       - name: Getting Docker Images
         run: |
           docker images
-          docker inspect srinu641/spring-application-github:V1.0
           docker ps -a
-      
+#      - name: Run aOne-line Script
+#        run: sh ./sonarqube-install.sh
 
-      #      #Todo  Set up AWS Credentials -> not started
-      #      - name: Configure AWS Credentials
-      #        uses: aws-actions/configure-aws-credentials@v2
-      #        with:
-      #          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      #          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      #          aws-region: ${{ secrets.AWS_REGION }}
-      #
-      #      - name: Log in to Amazon ECR
-      #        run: |
-      #          aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.ECR_REPOSITORY_URI }}
-      #
-      #      - name: Push image to Amazon ECR
-      #        run: |
-      #          docker push ${{ secrets.ECR_REPOSITORY_URI}}/actions-cicd:latest
+      # Todo Install Jfrog
+      # Todo Reference link to install Jfrog --> https://docs.jfrog-applications.jfrog.io/jfrog-applications/jfrog-cli/install
+      - name: Install Jfrog
+        run: |
+          sudo mkdir -p /usr/share/keyrings;
+          curl -fsSL https://releases.jfrog.io/artifactory/api/v2/repositories/jfrog-debs/keyPairs/primary/public | sudo gpg --dearmor -o /usr/share/keyrings/jfrog.gpg
+          echo "deb [signed-by=/usr/share/keyrings/jfrog.gpg] https://releases.jfrog.io/artifactory/jfrog-debs focal contrib" | sudo tee /etc/apt/sources.list.d/jfrog.list
+          sudo apt update;
+          sudo apt install -y jfrog-cli-v2-jf;
+          jf intro;
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+        terraform_version: 1.3.0
+
+#      - name: Terraform Init
+#        run: terraform init
+#      - name: Terraform Apply
+#        run: terraform apply -auto-approve
+
+
+        #      - name: Setup JFrog CLI
+      #        uses: jfrog/setup-jfrog-cli@v4
       #        env:
-      #          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      #          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      #          aws-region: ${{ secrets.AWS_REGION }}
+      #          JF_URL: ${{ secrets.JF_URL }}
+      #          JF_USER: ${{ secrets.JF_USER }}
+      #          JF_PASSWORD: ${{ secrets.JF_PASSWORD }}
+      #      - name: Download Artifacts
+      #        run: jfrog rt dl artifacts/
+      #      - name: Upload Artifacts
+      #        run: jfrog rt u aether artifacts/
+      #      - name: Publish Build Info
+      #        run: jfrog rt bp
 
+      # TODO Trivy Install
       - name: Install Trivy
         run: |
           sudo apt-get install -y wget gnupg
@@ -117,111 +150,111 @@ jobs:
           echo "deb [signed-by=/usr/share/keyrings/trivy.gpg] https://aquasecurity.github.io/trivy-repo/deb generic main" | sudo tee -a /etc/apt/sources.list.d/trivy.list
           sudo apt-get update
           sudo apt-get install -y trivy
+      # TODO  Scan the Image using Trivy
+      - name: Trivy image scan
+        run: trivy image srinu641/spring-application-k8s:v3.02 #todo Image Version
 
-  k8s-deploy:
-    runs-on: ubuntu-latest
-    needs: Building-and-Testing
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
-          fetch-depth: 0
-
-      - name: Install kubectl
-        run: |
-          curl -O https://s3.us-west-2.amazonaws.com/amazon-eks/1.30.7/2024-12-12/bin/linux/amd64/kubectl
-          chmod +x ./kubectl
-          sudo mv ./kubectl /usr/local/bin/kubectl
+      #      - name: Scan Docker Image with Trivy
+      #        run: docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy:latest image ${{ secrets.DOCKERHUB_USERNAME }}/my-app:${{ github.sha }}
+      # TODO SONARQUBE
+      #      - uses: sonarsource/sonarqube-scan-action@master #Todo Optional [ SonarSource/sonarqube-scan-action@v5.0.0 ]
+      #        env:
+      #          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      #          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }} # Todo Install Sonarqube in Ec2 Instance Add EC2 DNS Domain in GitHub Secrets
+      #        with:
+      #          # Todo Sonarqube Project Name
+      #          args: >
+      #            -Dsonar.organization=Spring-Boot-Sonarqube
+      #            -Dsonar.projectKey=SonarCloudCodeAnalyisis
+      #            -Dsonar.python.coverage.reportPaths=coverage.xml
+      #      # Todo Sonarqube quality gate
+      #      - name: SonarQube Quality Gate check
+      #        id: sonarqube-quality-gate-check
+      #        uses: sonarsource/sonarqube-quality-gate-action@master
+      #        with:
+      #          pollingTimeoutSec: 600
+      #        env:
+      #          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      #          SONAR_HOST_URL: ${{ vars.SONAR_HOST_URL }}
 
       - name: Install ArgoCD CLI
         run: |
           curl -sSL -o argocd https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64
           chmod +x argocd
           sudo mv argocd /usr/local/bin/argocd
+      #      - name: Login to ArgoCD
+      #        run: |
+      #            argocd login ${{ secrets.ARGO_CD_SERVER }} \
+      #                --username ${{ secrets.ARGO_CD_USERNAME }} \
+      #                --password ${{ secrets.ARGO_CD_PASSWORD }} \
+      #                --insecure
 
-#
-#      - name: Configure AWS credentials
+      # Todo AWS ECR Spring Boot
+      #      - name: Configure AWS credentials
+      #        uses: aws-action/configure-aws-credentials@v2
+      #        with:
+      #           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      #           aws-secret-access-key: ${{ secrets.AWS_SECRETS_KEY }}
+      #           aws-region: us-east-1
+      #
+      #      - name: Login to Amazon ECR
+      #        run: |
+      #          aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
+      #
+      #      - name: Build and push Docker image
+      #        run: |
+      #          cd backend
+      #          docker buildx create --use
+      #          docker buildx inspect --bootstrap
+      #          docker buildx build --platform linux/arm64 -t ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$ECR_BACKEND_IMAGE:latest --push .
+
+      #      - name: Send Email Notification
+      #        uses: dawidd6/action-send-mail@v6
+      #        with:
+      #          server_address: smtp.gmail.com
+      #          server_port: 465
+      #          username: ${{ secrets.EMAIL_USER }}
+      #          password: ${{ secrets.EMAIL_PASS }}
+      #          subject: "Docker Image Scan Report"
+      #          to: ${{ secrets.EMAIL_TO }}
+      #          from: GitHub CI/CD <${{ secrets.EMAIL_USER }}>
+      #          body: "The Trivy scan report is attached. Job Done"
+      #          attachments: trivy-report.json
+      #TODO  Set up AWS Credentials
+#      - name: Configure AWS Credentials
 #        uses: aws-actions/configure-aws-credentials@v2
 #        with:
-#           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-#           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-#           aws-region: ap-south-1
-#      - name: Deploy to EKS
+#          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+#          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+#          aws-region: ${{ secrets.AWS_REGION }}
+#
+#      # Log in to Amazon ECR
+#      - name: Log in to Amazon ECR
 #        run: |
-#          alias k=kubectl
-#          k create namespsce database-namespace
-#          k apply -f file_name
-#          kubectl apply -f ds.yml
-#      - name: Configure kubeconfig
+#          aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.ECR_REPOSITORY_URI }}
+#
+#      # Push image to Amazon ECR
+#      - name: Push image to Amazon ECR
 #        run: |
-#          mkdir -p $HOME/.kube
-#          echo "${{ secrets.EKS_KUBECONFIG }}" > $HOME/.kube/config
+#          docker push ${{ secrets.ECR_REPOSITORY_URI}}/actions-cicd:latest
+#        env:
+#          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+#          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+#          aws-region: ${{ secrets.AWS_REGION }}
+#
+#      # Update Kubeconfig
 #      - name: Update kubeconfig
-#        run: aws eks --region ${{ secrets.AWS_REGION }} update-kubeconfig --name actions-eks-cluster # cluster name
-
-# Deploy to Amazon EKS -> not started
+#        run: aws eks --region ${{ secrets.AWS_REGION }} update-kubeconfig --name actions-eks-cluster
+#
+#      # Install kubectl
+#      - name: Install kubectl
+#        run: |
+#          curl -o kubectl https://amazon-eks.s3.us-west-2.amazonaws.com/1.21.2/2021-07-05/bin/linux/amd64/kubectl
+#          chmod +x ./kubectl
+#          sudo mv ./kubectl /usr/local/bin/kubectl
+#
+#      # Deploy to Amazon EKS
 #      - name: Deploy to EKS
 #        run: |
 #          kubectl apply -f k8s-manifests/deployment.yaml
 #          kubectl apply -f k8s-manifests/service.yaml
-
-
-
-      # - name: Update deployment.yaml with newly built image
-      #   run: |
-      #     git config user.name "${{ secrets.GIT_USERNAME }}"
-      #     git config user.email "${{ secrets.GIT_EMAIL }}"
-      #     git fetch origin
-      #     git checkout master
-      #     git pull origin master
-#          pwd
-#          cat k8s-manifest/app-deployment.yml
-#          cat k8s-manifest/db-deployment.yml
-#          pwd
-#          sed -i "s+${{ secrets.DOCKERHUB_USERNAME }}/my-app.*+${{ secrets.DOCKERHUB_USERNAME }}/my-app:${{ github.sha }}+g" manifest/deployment.yaml
-#          cat manifest/deployment.yaml
-
-      # - name: Commit and Push Updated deployment.yaml
-      #   run: |
-      #     git config user.name "${{ secrets.GIT_USERNAME }}"
-      #     git config user.email "${{ secrets.GIT_EMAIL }}"
-      #     git remote set-url origin https://$GIT_USERNAME:$PERSONAL_ACCESS_TOKEN@github.com/${{ github.repository }}.git
-      #     git fetch origin
-      #     git checkout master
-      #     git pull origin master
-      #     git add .
-      #     git commit -m "Update image to spring-application-demo:${{ github.sha }}"
-      #     git push origin master
-#
-#      - name: Refresh ArgoCD App and Sync
-#        run: argocd app sync my-app
----
-
-
-#Error
-# a step cannot have both the `uses` and `run` keys
-# Missing download info for docker/login-action@v4
-#every step must define a `uses` or `run` key
-
-#  ✅ Correct Usage (Scan Docker Image)
-#- name: Run Trivy vulnerability scanner on Docker image
-#  uses: aquasecurity/trivy-action@master
-#  with:
-#    scan-type: 'image'
-#    scan-ref: 'srinu641/spring-application-github:v1.0'
-#    severity: 'CRITICAL,HIGH'
-#    ignore-unfixed: true
-#    format: 'table'
-#    exit-code: '1'
-
-#✅ If You Want to Scan Code Instead of Image
-#- name: Run Trivy vulnerability scanner on code
-#  uses: aquasecurity/trivy-action@master
-#  with:
-#    scan-type: 'fs'
-#    scan-ref: '.'
-#    severity: 'CRITICAL,HIGH'
-#    ignore-unfixed: true
-#    format: 'table'
-#    exit-code: '1'
-
