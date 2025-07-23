@@ -56,8 +56,7 @@ public class AddressServicesImpl implements AddressServices {
     @Override
     @Transactional
     public Address findByIdAddress(int id) {
-        Address address = addressRepo.findByIdAddress(id).
-                orElseThrow(() -> new RuntimeException("Address Not Found"));
+        Address address = addressRepo.findByIdAddress(id).orElseThrow(() -> new RuntimeException("Address Not Found"));
         return address;
     }
 
@@ -71,8 +70,7 @@ public class AddressServicesImpl implements AddressServices {
     @Override
     @Transactional
     public Address updateAddress(Address updateAddress, int id) {
-        Address address = addressRepo.findByIdAddress(id)
-                .orElseThrow(() -> new IllegalArgumentException("No Address Id"));
+        Address address = addressRepo.findByIdAddress(id).orElseThrow(() -> new IllegalArgumentException("No Address Id"));
         if (address.getArea() != null) {
             address.setArea(updateAddress.getArea());
         }
