@@ -14,3 +14,5 @@ FROM openjdk:17 AS builder
 COPY --from=build /target/spring-application-github.jar spring-application-github.jar
 EXPOSE 2255
 ENTRYPOINT ["java", "-jar", "spring-application-github.jar"]
+
+USER nobody
