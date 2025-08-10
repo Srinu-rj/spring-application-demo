@@ -5,9 +5,7 @@ import com.foodapp.springfoodapp.entiry.Address;
 import com.foodapp.springfoodapp.repository.AddressRepo;
 import com.foodapp.springfoodapp.service.AddressServices;
 import jakarta.transaction.Transactional;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -56,8 +54,11 @@ public class AddressServicesImpl implements AddressServices {
     @Override
     @Transactional
     public Address findByIdAddress(int id) {
-        Address address = addressRepo.findByIdAddress(id).orElseThrow(() -> new RuntimeException("Address Not Found"));
-        return address;
+        Address address = addressRepo.findByIdAddress(id).orElseThrow();
+        if (address == null){
+            throw new RuntimeException("Address Not Found");
+        }else {
+            return address;
     }
 
     @Override
@@ -68,7 +69,6 @@ public class AddressServicesImpl implements AddressServices {
     }
 
     @Override
-    @Transactional
     public Address updateAddress(Address updateAddress, int id) {
         Address address = addressRepo.findByIdAddress(id).orElseThrow(() -> new IllegalArgumentException("No Address Id"));
         if (address.getArea() != null) {

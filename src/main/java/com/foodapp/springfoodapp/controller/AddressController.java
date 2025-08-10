@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 
-
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("${api.v1.prefix}/address")
@@ -43,7 +42,11 @@ public class AddressController {
     @GetMapping("/get/all")
     public ResponseEntity<List<Address>> getAllAddress() {
         List<Address> address = addressServices.getAll();
-        return new ResponseEntity<>(address, HttpStatus.OK);
+        if (address.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }else {
+            return new ResponseEntity<>(address, HttpStatus.OK);
+        }
     }
 
 
@@ -57,18 +60,28 @@ public class AddressController {
     @GetMapping("/{id}")
     public ResponseEntity<Address> findByAddressId(@PathVariable int id) {
         Address address = addressServices.findByIdAddress(id);
-        return ResponseEntity.ok(address);
+        // If address is null, return 404 Not Found
+        // If address is found, return 200 OK with the address object
+        if (address == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return new ResponseEntity<>(address, HttpStatus.OK);
     }
 
     @DeleteMapping("/delete/{addressId}")
     public ResponseEntity<String> deleteBill(@PathVariable int addressId) {
-        addressServices.deleteAddress(addressId);
-        return ResponseEntity.status(HttpStatus.CREATED).body("");
+
+        if (addressServices.deleteAddress(addressId) != null) {
+            return new ResponseEntity<>("Address deleted successfully", HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("Address not found", HttpStatus.NOT_FOUND);
+        }
     }
 
     @PutMapping("/update/{id}")
     public ResponseEntity<Address> updateAddress(@PathVariable int id, @RequestBody Address updateAddress) {
         Address address = addressServices.updateAddress(updateAddress, id);
+
         return new ResponseEntity<>(address, HttpStatus.OK);
     }
 
