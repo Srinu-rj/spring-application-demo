@@ -10,7 +10,7 @@ FROM maven:3.9.6-eclipse-temurin-22-jammy AS build
 COPY . .
 RUN mvn clean package -DskipTests
 
-FROM openjdk:17 AS builder
+FROM openjdk:26 AS builder
 COPY --from=build /target/spring-application-github.jar spring-application-github.jar
 EXPOSE 2255
 ENTRYPOINT ["java", "-jar", "spring-application-github.jar"]
