@@ -1,18 +1,20 @@
-# # Step 1: Use official OpenJDK as base image # openjdk:17-jdk-slim
-# FROM eclipse-temurin:17-jdk-alpine
-# WORKDIR /app
-# COPY target/spring-application-github spring-application-github.jar
-# EXPOSE  2255
-# ENTRYPOINT ["java", "-jar", "spring-application-github.jar"]
-
-
-FROM maven:3.9.6-eclipse-temurin-22-jammy AS build
+FROM eclipse-temurin:17-jdk-alpine AS build
 COPY . .
-RUN mvn clean package -DskipTests
-
-FROM openjdk:17 AS builder
-COPY --from=build /target/spring-application-github.jar spring-application-github.jar
-EXPOSE 2255
-ENTRYPOINT ["java", "-jar", "spring-application-github.jar"]
-
+LABEL maintainer="sreenivasa raju | dnsrinu143@gmail.com"
+LABEL version="v:1.0.0"
+LABEL description="A Docker image for a Spring Boot application."
+EXPOSE 1199
+ENTRYPOINT ["java", "-XX:MaxRAMPercentage=75.0","-jar", "spring-application-github.jar"]
 USER nobody
+
+
+#FROM eclipse-temurin:21.0.3_9-jdk-jammy AS builder
+#WORKDIR /build
+#COPY . .
+#RUN ./mvnw package -DskipTests
+#ENTRYPOINT ["java", "-XX:MaxRAMPercentage=75.0","-jar", "/spring-application-github.jar"]
+#USER raju
+
+# TODO DOCKER BASE IMAGES: -> https://dev.to/devaaai/best-docker-base-images-and-performance-optimization-for-java-applications-in-2025-kdd
+
+

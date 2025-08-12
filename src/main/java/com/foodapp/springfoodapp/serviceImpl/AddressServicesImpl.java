@@ -17,6 +17,11 @@ public class AddressServicesImpl implements AddressServices {
 
     private final AddressRepo addressRepo;
 
+    @Override
+    public Address updateAddress(Address updateAddress, int id) {
+        return null;
+    }
+
     //todo -> error "Query did not return a unique result: 3 results were returned",
     @Override
     @Transactional
@@ -55,40 +60,40 @@ public class AddressServicesImpl implements AddressServices {
     @Transactional
     public Address findByIdAddress(int id) {
         Address address = addressRepo.findByIdAddress(id).orElseThrow();
-        if (address == null){
+        if (address == null) {
             throw new RuntimeException("Address Not Found");
-        }else {
+        } else {
             return address;
+        }
+
+
+//    @Override
+//    public Address updateAddress(Address updateAddress, int id) {
+//        Address address = addressRepo.findByIdAddress(id).orElseThrow(() -> new IllegalArgumentException("No Address Id"));
+//        if (address.getArea() != null) {
+//            address.setArea(updateAddress.getArea());
+//        }
+//        if (address.getCity() != null) {
+//            address.setCity(updateAddress.getCity());
+//        }
+//        if (address.getState() != null) {
+//            address.setState(updateAddress.getState());
+//        }
+//        if (address.getCountry() != null) {
+//            address.setCountry(updateAddress.getCountry());
+//        }
+//        if (address.getPinCode() != null) {
+//            address.setCountry(updateAddress.getCountry());
+//        }
+//        return addressRepo.save(address);
+//    }
+
+
     }
 
     @Override
-    @Transactional
     public Address getCityByQuery(String keyWord) {
-        Address findByCityAddress = addressRepo.getCityByQuery(keyWord);
-        return findByCityAddress;
+        return null;
     }
-
-    @Override
-    public Address updateAddress(Address updateAddress, int id) {
-        Address address = addressRepo.findByIdAddress(id).orElseThrow(() -> new IllegalArgumentException("No Address Id"));
-        if (address.getArea() != null) {
-            address.setArea(updateAddress.getArea());
-        }
-        if (address.getCity() != null) {
-            address.setCity(updateAddress.getCity());
-        }
-        if (address.getState() != null) {
-            address.setState(updateAddress.getState());
-        }
-        if (address.getCountry() != null) {
-            address.setCountry(updateAddress.getCountry());
-        }
-        if (address.getPinCode() != null) {
-            address.setCountry(updateAddress.getCountry());
-        }
-        return addressRepo.save(address);
-    }
-
-
 }
 

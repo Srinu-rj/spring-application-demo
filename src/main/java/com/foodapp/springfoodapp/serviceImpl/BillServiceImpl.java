@@ -35,7 +35,7 @@ public class BillServiceImpl implements BillService {
     public Bill getById(int billId) {
         Optional<Bill> billOpt = billRepo.findByIdQuery(billId);
         if (billOpt.isEmpty()) {
-            throw new RuntimeException("Bill Not Found");
+            throw new IllegalArgumentException("Bill Not Found");
         }
         return billOpt.get();
 //        .orElseThrow(() -> new IllegalStateException("updateBill not found"));
