@@ -6,3 +6,4 @@ LABEL description="A Docker image for a Spring Boot application."
 EXPOSE 1199
 ENTRYPOINT ["java", "-XX:MaxRAMPercentage=75.0","-jar", "spring-application-github.jar"]
 USER nobody
+
